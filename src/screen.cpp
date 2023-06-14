@@ -122,15 +122,37 @@ void Screen::showNumber(int display, int numberToShow, int enableDot) {
 void Screen::showTemperature(float temperature) {
     char string[4];
     sprintf(string,"%3.1f", temperature);
+    for(char i: string) {
+        printf("%c", i);
+    }
+    printf("\n");
+
     int numberOne = int(string[0] - '0');
     int numberTwo = int(string[1] - '0');
-    int numberThree = int(string[3] - '0');
+    int numberThree = int(string[2] - '0');
+    int numberFour = int(string[3] - '0');
 
+    if (string[0] == '-') {
+        gpio_set_dir(toggle1, true);
+        gpio_set_dir(ledG, true);
+        sleep_us(50);
+        gpio_set_dir(ledG, false);
+        gpio_set_dir(toggle1, false);
+        this->showNumber(toggle2, numberTwo, true);
+        this->showNumber(toggle3, numberFour, false);
+    } else if (temperature >= 10) {
+        this->showNumber(toggle1, numberOne, false);
+        this->showNumber(toggle2, numberTwo, true);
+        this->showNumber(toggle3, numberFour, false);
+    } else if (0 > temperature < 10) {
+        this->showNumber(toggle2, numberOne, true);
+        this->showNumber(toggle3, numberThree, false);
+    } else if (temperature == 0) {
+        this->showNumber(toggle2, 0, true);
+        this->showNumber(toggle3, 0, false);
+    }
     // printf("%d %d , %d\n", numberOne, numberTwo, numberThree);
     
-    this->showNumber(toggle1, numberOne, false);
-    this->showNumber(toggle2, numberTwo, true);
-    this->showNumber(toggle3, numberThree, false);
 
 }
 

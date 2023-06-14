@@ -22,7 +22,7 @@ int main() {
 	int timer = 750;
 	int last_relay_time = 60000;
 	int status = 0;
-	float temperature = 21.2;
+	float temperature = -5.2;
 	while (1) {
 		timer++;
 		last_relay_time++;
