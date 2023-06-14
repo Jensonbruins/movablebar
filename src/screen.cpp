@@ -5,7 +5,52 @@
 
 
 Screen::Screen() {
+    ledRow.insert(ledRow.end(), {ledA, ledB, ledC, ledD, ledE, ledF}); // 0
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
 
+    ledRow.insert(ledRow.end(), {ledB, ledC}); // 1
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA, ledB, ledG, ledE, ledD}); // 2
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA, ledB, ledG, ledC, ledD}); // 3
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA, ledB, ledG, ledC, ledD}); // 4
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA, ledF, ledG, ledC, ledD}); // 5
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA, ledC, ledD, ledE, ledF, ledG}); // 6
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA, ledB, ledC}); // 7
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA,ledB, ledC, ledD, ledE, ledF, ledG}); // 8
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    ledRow.insert(ledRow.end(), {ledA,ledB, ledC, ledD, ledF, ledG}); // 9
+    ledNumbers.push_back(ledRow);
+    ledRow.clear();
+
+    for (auto i : ledNumbers) {
+        for (int j : i) {
+            printf(" %d ",j);
+        }
+        printf("\n");
+    }
 }
 
 Screen::~Screen() {
@@ -48,9 +93,45 @@ void Screen::init() {
     gpio_set_pulls(ledF, false, false);
     gpio_set_pulls(ledG, false, false);
     gpio_set_pulls(dotLed, false, false);
+}
 
-    gpio_set_dir(toggle1, true);
-    gpio_set_dir(ledA, true);
+void Screen::showNumber(int display, int numberToShow, int enableDot) {
+    gpio_set_dir(display, true);
+    int counter = 0;
+    for (auto i: ledNumbers) {
+        if (counter == numberToShow) {
+            for (int j: i) {
+                gpio_set_dir(j, true);
+                sleep_us(50);
+                gpio_set_dir(j, false);
+            }
+            break;
+        }
+        counter++;
+    }
+
+    if (enableDot) {
+        gpio_set_dir(dotLed, true);
+        sleep_us(50);
+        gpio_set_dir(dotLed, false);
+    }
+
+    gpio_set_dir(display, false);
+}
+
+void Screen::showTemperature(float temperature) {
+    char string[4];
+    sprintf(string,"%3.1f", temperature);
+    int numberOne = int(string[0] - '0');
+    int numberTwo = int(string[1] - '0');
+    int numberThree = int(string[3] - '0');
+
+    // printf("%d %d , %d\n", numberOne, numberTwo, numberThree);
+    
+    this->showNumber(toggle1, numberOne, false);
+    this->showNumber(toggle2, numberTwo, true);
+    this->showNumber(toggle3, numberThree, false);
+
 }
 
 void Screen::showOn() {

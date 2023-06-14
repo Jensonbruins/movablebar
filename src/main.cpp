@@ -7,7 +7,7 @@
 
 int main() {
 	stdio_init_all();
-	sleep_ms(1000);
+	sleep_ms(5000);
 
 	One_wire one_wire(1);
 	one_wire.init();
@@ -22,34 +22,39 @@ int main() {
 	int timer = 750;
 	int last_relay_time = 60000;
 	int status = 0;
+	float temperature = 21.2;
 	while (1) {
 		timer++;
 		last_relay_time++;
 
-		if (status) {
-			screen.showOn();
-		} else {
-			screen.showOff();
-		}
-		
-		if (timer >= 750) {
-			timer = 0;
-        	one_wire.convert_temperature(address, true, false);
-		}
+		screen.showTemperature(temperature);
 
-		if (last_relay_time >= 750) {
-			last_relay_time = 0;
-			// one_wire.convert_temperature(address, true, false);
-			float temperature = one_wire.temperature(address);
-			printf("Temperature: %3.1f C\n", one_wire.temperature(address));
-			if (temperature <= 4) {
-				relais.setState(false);
-				status = 0;
-			} else if (temperature >= 6) {
-				relais.setState(true);
-				status = 1;
-			}
-		}
+		// if (status) {
+		// 	screen.showOn();
+		// } else {
+		// 	screen.showOff();
+		// }
+		
+		// if (timer >= 750) {
+			// timer = 0;
+        	// one_wire.convert_temperature(address, true, false);
+			// float temperature = one_wire.temperature(address);
+			// printf("Temperature: %3.1foC\n", one_wire.temperature(address));
+		// }
+
+		// if (last_relay_time >= 750) {
+		// 	last_relay_time = 0;
+		// 	// one_wire.convert_temperature(address, true, false);
+		// 	float temperature = one_wire.temperature(address);
+		// 	printf("Temperature: %3.1f C\n", one_wire.temperature(address));
+		// 	if (temperature <= 4) {
+		// 		relais.setState(false);
+		// 		status = 0;
+		// 	} else if (temperature >= 6) {
+		// 		relais.setState(true);
+		// 		status = 1;
+		// 	}
+		// }
 
         sleep_ms(1);
 	}
